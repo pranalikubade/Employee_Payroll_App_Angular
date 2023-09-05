@@ -3,15 +3,19 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AddEmployeeComponent } from './component/add-employeee/add-employeee.component';
+import { AddEmployeeeComponent } from './component/add-employeee/add-employeee.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './material/angular-material/angular-material.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HeaderComponent } from './component/header/header.component';
+import { HomeComponent } from './component/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AddEmployeeComponent
+    AddEmployeeeComponent,
+    HeaderComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
