@@ -4,10 +4,12 @@ import { AddEmployeeeComponent } from './component/add-employeee/add-employeee.c
 import { HomeComponent } from './component/home/home.component';
 
 const routes: Routes = [
-{path:'add',component:AddEmployeeeComponent },
- {path:'',component:AddEmployeeeComponent },
-  {path:'home',component:HomeComponent }
 
+
+  {path:'add',component:AddEmployeeeComponent },
+ {path:'',redirectTo:'/home',pathMatch:'full' },
+  {path:'home',component:HomeComponent },
+  {path: 'add/:id',component:AddEmployeeeComponent}
 ];
 
 @NgModule({

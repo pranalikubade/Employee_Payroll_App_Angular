@@ -9,18 +9,18 @@
 
     <!-----Input FullName------>
     <div class="row-content">
-      <mat-form-field class="example-full-width" appearance="outline">
+      <mat-form-field class="example-full-width" appearance="outline" required >
         <mat-label>Full Name</mat-label>
-        <input type="name" class="name-input" matInput formControlName="name">
-        
-      </mat-form-field> 
+        <input type="name" class="name-input" matInput formControlName="name" required="name">
+        </mat-form-field> 
     </div>
 
     <!------Profile image---------->
     <div class="row-content">
       <label class="label text" for="profile">Profile Image </label>
       <div class="profile-radio-content">
-        <mat-radio-group ngDefaultControl formControlName="profilePic">
+
+        <mat-radio-group ngDefaultControl formControlName="profilePic" >
           <mat-radio-button class=profile-width id="profile1" name="profile" color="primary" 
            value="../assets/profile-images/Ellipse -1.png" required>
           <img class="profile" id='image1' src="../assets/profile-images/Ellipse -1.png">
@@ -59,13 +59,37 @@
         </mat-radio-group>
       </div>
     </div>
+    <!-----Input Phone------>
+    <!-- <div class="row-content">
+      <mat-form-field class="example-full-width" appearance="outline" required>
+        <mat-label>Phone</mat-label>
+        <input type="phone" class="phone-input" matInput required="phone">
+        </mat-form-field> 
+    </div>     -->
+    
+
+    <!-----Input Email------>
+    <!-- <div class="row-content">
+      <mat-form-field class="example-full-width" appearance="outline" required>
+        <mat-label>Email</mat-label>
+        <input type="email" class="email-input" matInput required="email">
+        </mat-form-field> 
+    </div> -->
+
+    <!-----Input Address------>
+    <!-- <div class="row-content">
+      <mat-form-field class="example-full-width" appearance="outline" required>
+        <mat-label>Address</mat-label>
+        <input type="address" class="address-input" matInput required="address">
+        </mat-form-field> 
+    </div> -->
 
     <!----Input Department---->
     <div class="row-content">
       <label class="label text" for="depatment">Department</label>
       <div *ngFor="let department of departments">
-        <mat-checkbox #checkbox class="checkbox" type="checkbox" color="primary" [value]="department.value"
-          (change)="onCheckboxChange($event)"[checked]="department.checked">
+        <mat-checkbox #checkbox class="checkbox" type="checkbox" color="primary"  [value]="department.value"
+          (change)="onCheckboxChange($event)"[checked]="department.checked" formArrayName="department">
           <label class="text">{{department.name}}</label>
         </mat-checkbox>
       </div>
@@ -75,8 +99,8 @@
     <div class="row-content">
       <label class="label text" for="salary">Choose your Salary </label>
       <mat-slider thumbLabel [displayWith]="formatLabel"  #salaryOutput (change)="updateSetting($event)" tickInterval="1000" min="300000" max="500000" step="1000" aria-label="units" 
-      class="salary-input" name="salary" color="primary" showTickMarks discrete [displayWith]="formatLabel"   formControlName="salary"> 
-        <input matSliderThumb [value]="salary" formControlName="salary">
+      class="salary-input" name="salary" color="primary" showTickMarks discrete [displayWith]="formatLabel" > 
+        <input matSliderThumb [value]="salary" formControlName="salary" >
       </mat-slider>
        </div> 
 
@@ -94,8 +118,7 @@
     <div class="row-content">
       <mat-form-field class="example-full-width" appearance="outline">
         <mat-label>Notes</mat-label>
-        <textarea matInput id="notes" class="input" name="Notes" placeholder="Write the Note" style="height:100px" formControlName="note"
-          required></textarea>
+        <textarea matInput id="notes" class="input" name="Notes" placeholder="Write the Note" style="height:100px" required formControlName="note"></textarea>
       </mat-form-field>
     </div>
 

@@ -1,10 +1,10 @@
-
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Employee } from 'src/app/model/employee.model';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Employee } from 'src/app/model/employee.model';
+import { HttpService } from 'src/app/services/http.service';
 
 
 @Component({
@@ -14,7 +14,8 @@ import { Employee } from 'src/app/model/employee.model';
 })
 export class AddEmployeeeComponent implements OnInit{
   public employee:Employee=new Employee();
-  employeeFormGroup: FormGroup<any>;
+  employeeFormGroup: FormGroup;
+  empId:number=this.activatedRoute.snapshot.params['id']
 
 
   departments: Array<any> = [
@@ -24,10 +25,12 @@ export class AddEmployeeeComponent implements OnInit{
     {id: 4, name: "Engineer",value: "Engineer",checked: false},
     {id: 5,name: "Other",value: "Other",checked: false  }
   ]
- constructor(private formBuilder: FormBuilder, 
+
+    constructor(private formBuilder: FormBuilder, 
     private router: Router,
-   private activatedRoute: ActivatedRoute,
-    private snackBar: MatSnackBar) {
+    private activatedRoute: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private httpService:HttpService) {
 this.employeeFormGroup = this.formBuilder.group({
 name: new FormControl('', [Validators.required, Validators.pattern("^[A-Z][a-zA-Z\\s]{2,}$")]),
 profilePic: new FormControl('', [Validators.required]),
@@ -39,8 +42,27 @@ note: new FormControl('', [Validators.required])
 })
 }
 ngOnInit(): void {
-  throw new Error('Method not implemented.');
-}
+  if(this.empId!=undefined) {
+    this.httpService.getEmployeeById(this.empId).subscribe(employee=>{
+      console.log(employee);
+        this.employeeFormGroup.get('name')?.patchValue(employee.data.name);
+        this.employeeFormGroup.get('profilePic')?.patchValue(employee.data.profilePic);
+        this.employeeFormGroup.get('gender')?.patchValue(employee.data.gender);
+        this.employeeFormGroup.get('salary')?.patchValue(employee.data.salary);
+        this.employeeFormGroup.get('startDate')?.patchValue(employee.data.startDate);
+        this.employeeFormGroup.get('note')?.patchValue(employee.data.note);
+        const department:FormArray = this.employeeFormGroup.get('department') as FormArray;
+        employee.employeeData.department.forEach((dept: any) => {
+         for(let index=0; index < this.departments.length;index++){
+          if(this.departments[index].name === dept){
+            this.departments[index].checked = true;
+            department.push(new FormControl(this.departments[index].value))
+          }
+         }
+        });
+      });
+    }
+  }
 
 
   salary: number = 400000;
@@ -64,12 +86,46 @@ ngOnInit(): void {
       department.removeAt(index);
     }
   }
-  onSubmit() {
-    const dataString = JSON.stringify(this.employeeFormGroup.value);
-    localStorage.setItem('formData', dataString);
-    this.employeeFormGroup.reset();
-  console .log (dataString)
-  }
+ 
+      onSubmit() {
+        if(this.employeeFormGroup.valid){
+          if(this.employeeFormGroup.get('profilePic')?.untouched){
+            this.snackBar.open('Select the ProfilePic', '', {duration:4000, verticalPosition:'top'});
+          }
+          if(this.employeeFormGroup.get('gender')?.untouched) {
+            this.snackBar.open('Select the Gender', '', {duration: 4000, verticalPosition: 'top'});
+          }
+          if(this.employeeFormGroup.get('department')?.value.length == 0) {
+                this.snackBar.open('Deparment needs to be filled!', '', {duration: 4000, verticalPosition: 'top'});
+          }    }
+          else{
+            this.employee =this.employeeFormGroup.value;
+            if(this.empId!=undefined){
+              this.httpService.updateEmployee(this.empId,this.employee).subscribe(response => {
+                console.log(response);
+                this.ngOnInit();
+                this.router.navigateByUrl("/home");
+                this.snackBar.open('Updataed Successfully!','OK',{duration:4000, verticalPosition: 'top'});
+              });
+            }else{
+              this.httpService.addEmployee(this.employee).subscribe(response => {
+                console.log(response);
+                this.router.navigateByUrl("/home");
+                this.snackBar.open('Employee Added Successfully!',' OK', {duration:4000,verticalPosition:'top'})
+              });
+            }
+          }
+        }
 
 
+        
+
+        // this.httpService.addEmployee(this.employeeFormGroup.value).subscribe(response => {
+        //   console.log(response);
+        //   this.router.navigateByUrl("/home");
+          
+        // });
+      // }
 }
+
+  
